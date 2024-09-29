@@ -6,6 +6,7 @@ var dealerAceCount = 0;
 var yourAceCount = 0;
 var hidden;
 var canHit = true; //allows you to hit as long as yourSum < 21
+var gameResult;
 var deck;
 
 
@@ -67,8 +68,8 @@ function startGame(){
     hidden = deck.pop(); // remove hidden card from the deck
     dealerSum += getCardValue(hidden);   // get the card value  from the dealerhand
     dealerAceCount += checkAce(hidden); // get the ace count from the dealerhand
-   // console.log(hidden+  " and " + dealerSum);
-    while(dealerSum<12){
+ console.log(hidden+  " and " + dealerSum);
+    while(dealerSum<17){
         let cardimage = document.createElement("img"); // <img></img>
         let card = deck.pop();
         cardimage.src = "Card images/" + card + ".png"; // ==Remove the card from the deck== //
@@ -76,7 +77,7 @@ function startGame(){
          dealerSum += getCardValue(card);
 
         document.getElementById("dealer-cards").appendChild(cardimage);
-        console.log(dealerSum + "dealer cards");
+        console.log(dealerSum + "dealer cards Sum");
 
 
 
@@ -91,10 +92,10 @@ function startGame(){
         yourSum += getCardValue(card);
         document.getElementById("your-cards").appendChild(cardimage);
     }
-    console.log(yourSum + "your cards");
+    console.log(yourSum + " = your cards");
 
     document.getElementById("hit").addEventListener("click", Hit); //caling the hit function
-    document.getElementById("stay").addEventListener("click", Stand);
+    document.getElementById("stand").addEventListener("click", Stand); //calling the stand function
 
 }
 
@@ -134,11 +135,6 @@ function Hit(){
             canHit = false;
         }
         /* the if statement above is to make suure you cant draw anymore cards if the pleyerhand is greater than 21*/
-
-
- 
-
-
     } else return;
 
 
@@ -150,16 +146,39 @@ function Stand(){
     yourSum = reduceAce(yourSum, yourAceCount);
     canHit = false;
 
-    document.getElementById("hidden").src = "Card Images" + hidden + ".png";
-    document.getElementById("dealer-cards").appendChild(cardimage);
-    if (yourSum > 21){
-     console.log("win")
+ document.getElementById("hidden").src = "./Card Images/" + hidden + ".png";
+
+    //Display scores when When standing
+    console.log("Your cards: " + yourSum + " Dealer cards: " + dealerSum);
+    document.getElementById("dealer-sum").innerText = dealerSum;
+    document.getElementById("your-sum").innerText = yourSum;
+
+
+    if (yourSum > 21 ){
+     console.log("Lose");
+     document.getElementById("results").innerText = "You lose";
+     gameResult = -1;
     }
-    else if (dealerSum > 21){
-        console.log("lose")
+    else if (dealerSum > 21 ){
+        console.log("win");
+        document.getElementById("results").innerText = "You win";
+        gameResult = 1;
     } else if (dealerSum == yourSum){
-        console.log("TIe")
+        console.log("Tie");
+        document.getElementById("results").innerText = "It's a tie";
+        gameResult = 0;
+    } else if (yourSum > dealerSum){
+        console.log("win");
+        document.getElementById("results").innerText = "You win";
+        gameResult = 1;
+    } else if (dealerSum > yourSum){
+        console.log("lose");
+        document.getElementById("results").innerText = "You lose";
+        gameResult = -1;
     }
+
+
+
 }
 
 
@@ -170,7 +189,6 @@ function reduceAce(playerSum, playerAceCount){
 
         playerSum -= 10;
         playerAceCount--;
-
 
     }
     return playerSum;
